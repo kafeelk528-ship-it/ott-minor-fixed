@@ -1,22 +1,23 @@
 {% extends "base.html" %}
+{% block title %}Cart — OTT Store{% endblock %}
 {% block content %}
-
 <h2>Your Cart</h2>
-
-{% if products|length == 0 %}
-<p>No items added.</p>
+{% if cart %}
+  <ul class="cart-list">
+    {% for item in cart %}
+      <li>
+        <img src="{{ url_for('static', filename='img/' ~ item.logo) }}" alt="" class="cart-thumb">
+        <strong>{{ item.name }}</strong> — ₹{{ item.price }}
+        <a class="small-link" href="{{ url_for('remove_cart', plan_id=item.id) }}">Remove</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <div class="cart-total">Total: ₹{{ total }}</div>
+  <div class="cart-actions">
+    <a class="btn" href="{{ url_for('plans_page') }}">Continue Shopping</a>
+    <a class="btn primary" href="{{ url_for('checkout') }}">Checkout</a>
+  </div>
 {% else %}
-
-<ul class="cart-list">
-{% for p in products %}
-<li>{{ p[1] }} — ₹{{ p[2] }}</li>
-{% endfor %}
-</ul>
-
-<h3>Total: ₹{{ total }}</h3>
-
-<a href="/checkout" class="btn2">Proceed to Pay</a>
-
+  <p>Your cart is empty. <a href="{{ url_for('plans_page') }}">Browse plans</a></p>
 {% endif %}
-
 {% endblock %}
