@@ -1,20 +1,21 @@
 {% extends "base.html" %}
+{% block title %}Plans — OTT Store{% endblock %}
 {% block content %}
 <h2>All Plans</h2>
-<div class="grid">
+
+<div class="plans-grid">
   {% for p in plans %}
-    <div class="card">
-      <img class="logo" src="{{ url_for('static', filename='img/' + p.logo) }}" alt="">
+    <article class="card">
+      <img class="provider-logo" src="{{ url_for('static', filename='img/' ~ p.logo) }}" alt="">
       <h3>{{ p.name }}</h3>
-      <div class="small">{{ p.desc }}</div>
+      <p class="muted">{{ p.desc }}</p>
       <div class="price">₹{{ p.price }}</div>
-      <div style="margin-top:8px">
-        <a class="btn" href="{{ url_for('add_to_cart', pid=p.id) }}">Add to cart</a>
-        <a class="btn ghost" href="{{ url_for('buy_now', pid=p.id) }}">Buy Now</a>
-        <a class="small" href="{{ url_for('plan_details', pid=p.id) }}" style="margin-left:8px;color:#ddd">Details</a>
+      <div class="card-actions">
+        <a class="btn outlined" href="{{ url_for('plan_details', plan_id=p.id) }}">Details</a>
+        <a class="btn" href="{{ url_for('add_to_cart', plan_id=p.id) }}">Add to cart</a>
+        <a class="btn primary" href="{{ url_for('buy_now', plan_id=p.id) }}">Buy now</a>
       </div>
-      <div class="small" style="margin-top:8px">Available: {{ p.stock }}</div>
-    </div>
+    </article>
   {% endfor %}
 </div>
 {% endblock %}
