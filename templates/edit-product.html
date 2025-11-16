@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Edit Product</h2>
+
+<form method="POST" class="edit-box">
+    <label>Name</label>
+    <input type="text" name="name" value="{{ product[1] }}" required>
+
+    <label>Price</label>
+    <input type="number" name="price" value="{{ product[2] }}" required>
+
+    <label>Image File</label>
+    <input type="text" name="image" value="{{ product[3] }}" required>
+
+    <button type="submit" class="btn2">Save</button>
+</form>
+
+{% endblock %}
