@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Login</h2>
+<form method="post" action="{{ url_for('admin_login') }}">
+  <input name="username" placeholder="Username" required style="padding:8px;width:100%;margin-bottom:8px">
+  <input name="password" type="password" placeholder="Password" required style="padding:8px;width:100%;margin-bottom:8px">
+  <button class="btn" type="submit">Login</button>
+</form>
+{% endblock %}

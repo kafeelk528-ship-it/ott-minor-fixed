@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Edit Product</h2>
+<form method="post" enctype="multipart/form-data">
+  <input name="name" value="{{ product.name }}" placeholder="Name" required style="padding:8px;width:100%;margin-bottom:8px">
+  <input name="price" value="{{ product.price }}" placeholder="Price" required style="padding:8px;width:100%;margin-bottom:8px">
+  <input name="stock" value="{{ product.stock }}" placeholder="Stock" required style="padding:8px;width:100%;margin-bottom:8px">
+  <input name="desc" value="{{ product.desc }}" placeholder="Short description" style="padding:8px;width:100%;margin-bottom:8px">
+  <div class="small">Current logo:</div>
+  <img src="{{ url_for('static', filename='img/' + product.logo) }}" style="height:80px;margin-bottom:8px">
+  <input type="file" name="logo" accept="image/*" style="margin-bottom:8px">
+  <button class="btn" type="submit">Save</button>
+</form>
+{% endblock %}

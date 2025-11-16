@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<h3>Orders</h3>
+<table style="width:100%;border-collapse:collapse">
+  <tr style="text-align:left;"><th>ID</th><th>Name</th><th>Phone</th><th>UTR</th><th>Amount</th><th>Status</th></tr>
+  {% for o in orders %}
+  <tr>
+    <td>{{ o.id }}</td>
+    <td>{{ o.name }}</td>
+    <td>{{ o.phone }}</td>
+    <td>{{ o.utr }}</td>
+    <td>₹{{ o.amount }}</td>
+    <td>{{ o.status }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<h3 style="margin-top:20px">Products</h3>
+<a class="btn" href="{{ url_for('admin_add') }}">Add Product</a>
+<table style="width:100%;margin-top:8px">
+  <tr style="text-align:left"><th>ID</th><th>Logo</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
+  {% for p in products %}
+  <tr>
+    <td>{{ p.id }}</td>
+    <td><img src="{{ url_for('static', filename='img/' + p.logo) }}" style="height:48px"></td>
+    <td>{{ p.name }}</td>
+    <td>₹{{ p.price }}</td>
+    <td>{{ p.stock }}</td>
+    <td>
+      <a href="{{ url_for('admin_edit', pid=p.id) }}" class="btn ghost">Edit</a>
+      <form action="{{ url_for('admin_delete', pid=p.id) }}" method="post" style="display:inline">
+        <button class="btn ghost">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<a href="{{ url_for('admin_logout') }}" class="small" style="display:inline-block;margin-top:12px">Logout</a>
+{% endblock %}

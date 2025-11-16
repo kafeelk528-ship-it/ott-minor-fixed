@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Payment Submitted</h2>
+  <p>Thank you. Your UTR has been received and admin will verify the order shortly.</p>
+  <a class="btn" href="{{ url_for('home') }}">Back to Home</a>
+</div>
+{% endblock %}

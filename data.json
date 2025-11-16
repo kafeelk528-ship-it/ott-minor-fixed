@@ -1,0 +1,40 @@
+{
+  "plans": [
+    {
+      "id": 1,
+      "name": "Netflix Premium",
+      "price": 199,
+      "stock": 10,
+      "logo": "netflix.png",
+      "desc": "4K UHD \u2022 4 Screens"
+    },
+    {
+      "id": 2,
+      "name": "Amazon Prime Video",
+      "price": 149,
+      "stock": 8,
+      "logo": "prime.png",
+      "desc": "Full HD \u2022 Originals"
+    },
+    {
+      "id": 3,
+      "name": "Disney+ Hotstar",
+      "price": 299,
+      "stock": 5,
+      "logo": "hotstar.png",
+      "desc": "Sports + Movies"
+    },
+    {
+      "id": 4,
+      "name": "Sony LIV",
+      "price": 129,
+      "stock": 12,
+      "logo": "sonyliv.png",
+      "desc": "TV Shows & Originals"
+    }
+  ],
+  "orders": [],
+  "settings": {
+    "qr": "qr.png"
+  }
+}

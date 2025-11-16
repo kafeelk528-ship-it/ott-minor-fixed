@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Plans</h2>
+<div class="grid">
+  {% for p in plans %}
+    <div class="card">
+      <img class="logo" src="{{ url_for('static', filename='img/' + p.logo) }}" alt="">
+      <h3>{{ p.name }}</h3>
+      <div class="small">{{ p.desc }}</div>
+      <div class="price">₹{{ p.price }}</div>
+      <div style="margin-top:8px">
+        <a class="btn" href="{{ url_for('add_to_cart', pid=p.id) }}">Add to cart</a>
+        <a class="btn ghost" href="{{ url_for('buy_now', pid=p.id) }}">Buy Now</a>
+        <a class="small" href="{{ url_for('plan_details', pid=p.id) }}" style="margin-left:8px;color:#ddd">Details</a>
+      </div>
+      <div class="small" style="margin-top:8px">Available: {{ p.stock }}</div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}
