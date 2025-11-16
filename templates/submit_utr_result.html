@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Payment Received{% endblock %}
+{% block content %}
+  <h2>Payment submitted</h2>
+  {% if ok %}
+    <p>Notification sent to owner via Telegram.</p>
+  {% else %}
+    <p>Telegram notification failed: {{ telegram_resp }}</p>
+  {% endif %}
+  {% if email_sent %}
+    <p>Confirmation email sent to customer.</p>
+  {% elif email_err %}
+    <p>Sending email failed: {{ email_err }}</p>
+  {% endif %}
+  <p><a class="btn" href="{{ url_for('home') }}">Back to home</a></p>
+{% endblock %}
