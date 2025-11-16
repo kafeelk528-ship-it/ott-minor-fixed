@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="hero">
-  <h1>Featured Plans</h1>
-  <div class="grid">
-    {% for p in plans %}
-    <div class="card">
-      <img class="logo" src="{{ url_for('static', filename='img/' + p.logo) }}" alt="">
-      <h3>{{ p.name }}</h3>
-      <div class="small">{{ p.desc }}</div>
-      <div class="price">₹{{ p.price }}</div>
-      <div style="margin-top:8px">
-        <a class="btn" href="{{ url_for('add_to_cart', pid=p.id) }}">Add to cart</a>
-        <a class="btn ghost" href="{{ url_for('buy_now', pid=p.id) }}">Buy Now</a>
-        <a class="small" href="{{ url_for('plan_details', pid=p.id) }}" style="margin-left:8px;color:#ddd">Details</a>
-      </div>
-      <div class="small" style="margin-top:8px">Available: {{ p.stock }}</div>
+
+<h2 class="title">Our OTT Plans</h2>
+
+<div class="products">
+
+{% for p in products %}
+<div class="card">
+    <img src="/static/img/{{ p[3] }}" class="product-img">
+    <h3>{{ p[1] }}</h3>
+    <p>₹{{ p[2] }}</p>
+
+    <div class="btn-row">
+        <a href="/add-to-cart/{{ p[0] }}" class="btn">Add to Cart</a>
+        <a href="/buy-now/{{ p[0] }}" class="btn2">Buy Now</a>
     </div>
-    {% endfor %}
-  </div>
-</section>
+</div>
+{% endfor %}
+
+</div>
+
 {% endblock %}
