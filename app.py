@@ -1,238 +1,189 @@
-import os
-import sqlite3
-import logging
-from flask import Flask, render_template, request, redirect, session, url_for, flash, send_from_directory
-import requests
+from flask import Flask, render_template, redirect, request, session, url_for
+import telegram
 
 app = Flask(__name__)
-app.logger.setLevel(logging.INFO)
+app.secret_key = "supersecret123"
 
-# SECRET - pick from env or fallback (change before production)
-app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_please_change")
+# Telegram Bot Details
+BOT_TOKEN = "8162787624:AAGlBqWs32zSKFd76PNXjBT-e66Y9mh0nY4"
+CHAT_ID = "1857783746"
+bot = telegram.Bot(token=BOT_TOKEN)
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "database.db")
-
-# ---------------- DB helpers ----------------
-def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-def init_db_and_seed():
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            price INTEGER NOT NULL,
-            image TEXT NOT NULL
-        )
-    """)
-    conn.commit()
-
-    # seed only if empty
-    cur.execute("SELECT COUNT(1) as cnt FROM products")
-    if cur.fetchone()["cnt"] == 0:
-        defaults = [
-            ("Netflix Premium", 199, "netflix.png"),
-            ("Amazon Prime Video", 149, "prime.png"),
-            ("Disney+ Hotstar", 299, "hotstar.png"),
-            ("Sony LIV Premium", 129, "sonyliv.png"),
-            ("Zee5 Premium", 99, "zee5.png"),
-        ]
-        cur.executemany("INSERT INTO products (name, price, image) VALUES (?,?,?)", defaults)
-        conn.commit()
-        app.logger.info("Seeded products into DB.")
-    conn.close()
-
-# run init at startup
-init_db_and_seed()
+# PRODUCT DATABASE
+plans = [
+    {"id": 1, "name": "Netflix Premium", "price": 199, "stock": 100, "img": "netflix.png", "desc": "Premium UHD Plan"},
+    {"id": 2, "name": "Amazon Prime", "price": 149, "stock": 100, "img": "prime.png", "desc": "Prime Video + Delivery"},
+    {"id": 3, "name": "Disney+ Hotstar", "price": 99, "stock": 100, "img": "hotstar.png", "desc": "Premium + Sports"},
+    {"id": 4, "name": "Sony Liv Premium", "price": 89, "stock": 100, "img": "sonyliv.png", "desc": "Premium Plan"}
+]
 
 
-# ---------------- Utility ----------------
-def query_products():
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM products ORDER BY id")
-    rows = cur.fetchall()
-    conn.close()
-    return rows
-
-def get_product(pid):
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM products WHERE id=?", (pid,))
-    row = cur.fetchone()
-    conn.close()
-    return row
-
-# ---------------- Routes ----------------
+# ------------------------------------------
+# HOME PAGE
+# ------------------------------------------
 @app.route("/")
-def index():
-    try:
-        products = query_products()
-        return render_template("index.html", products=products)
-    except Exception as e:
-        app.logger.exception("Error rendering index:")
-        return "Internal error", 500
+def home():
+    return render_template("index.html", plans=plans)
 
+
+# ------------------------------------------
+# VIEW ALL PLANS
+# ------------------------------------------
 @app.route("/plans")
-def plans():
-    products = query_products()
-    return render_template("plans.html", plans=products)
+def all_plans():
+    return render_template("plans.html", plans=plans)
 
-@app.route("/plan/<int:pid>")
-def plan_detail(pid):
-    p = get_product(pid)
-    if not p:
-        return "Not found", 404
-    return render_template("plan-details.html", plan=p)
 
-# Cart
-@app.route("/add-to-cart/<int:pid>")
-def add_to_cart(pid):
+# ------------------------------------------
+# PRODUCT DETAILS
+# ------------------------------------------
+@app.route("/plan/<int:id>")
+def plan_details(id):
+    plan = next((p for p in plans if p["id"] == id), None)
+    if not plan:
+        return "Plan not found"
+    return render_template("plan-details.html", plan=plan)
+
+
+# ------------------------------------------
+# CART SYSTEM
+# ------------------------------------------
+@app.route("/add-to-cart/<int:id>")
+def add_to_cart(id):
+    plan = next((p for p in plans if p["id"] == id), None)
+    if not plan:
+        return redirect("/")
+
     cart = session.get("cart", [])
-    if pid not in cart:
-        cart.append(pid)
-        session["cart"] = cart
-        session.modified = True
-    return redirect(request.referrer or url_for("index"))
+    cart.append(plan)
+    session["cart"] = cart
 
-@app.route("/buy-now/<int:pid>")
-def buy_now(pid):
-    session["cart"] = [pid]
-    session.modified = True
-    return redirect(url_for("checkout"))
+    return redirect("/")
+
 
 @app.route("/cart")
-def cart_page():
+def cart_view():
     cart = session.get("cart", [])
-    if not cart:
-        return render_template("cart.html", products=[], total=0)
-    placeholders = ",".join("?"*len(cart))
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute(f"SELECT * FROM products WHERE id IN ({placeholders})", cart)
-    products = cur.fetchall()
-    conn.close()
-    total = sum(p["price"] for p in products)
-    return render_template("cart.html", products=products, total=total)
+    total = sum(item["price"] for item in cart)
+    return render_template("cart.html", cart=cart, total=total)
 
-@app.route("/remove-from-cart/<int:pid>")
-def remove_from_cart(pid):
+
+@app.route("/remove/<int:id>")
+def remove_item(id):
     cart = session.get("cart", [])
-    if pid in cart:
-        cart.remove(pid)
-        session["cart"] = cart
-    return redirect(url_for("cart_page"))
+    cart = [item for item in cart if item["id"] != id]
+    session["cart"] = cart
+    return redirect("/cart")
 
-# Checkout - shows QR and UTR form
+
+# ------------------------------------------
+# BUY NOW
+# ------------------------------------------
+@app.route("/buy-now/<int:id>")
+def buy_now(id):
+    plan = next((p for p in plans if p["id"] == id), None)
+    if not plan:
+        return redirect("/")
+    session["cart"] = [plan]
+    return redirect("/checkout")
+
+
+# ------------------------------------------
+# CHECKOUT
+# ------------------------------------------
 @app.route("/checkout")
 def checkout():
-    cart = session.get("cart", [])
-    if not cart:
-        return redirect(url_for("index"))
-    placeholders = ",".join("?"*len(cart))
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute(f"SELECT * FROM products WHERE id IN ({placeholders})", cart)
-    products = cur.fetchall()
-    conn.close()
-    total = sum(p["price"] for p in products)
-    return render_template("checkout.html", amount=total)
+    return render_template("checkout.html")
 
-# Submit UTR (POST)
+
+# ------------------------------------------
+# SUBMIT UTR (SENDS TELEGRAM MESSAGE)
+# ------------------------------------------
 @app.route("/submit_utr", methods=["POST"])
 def submit_utr():
+    utr = request.form.get("utr")
+    cart = session.get("cart", [])
+
+    if not cart:
+        return redirect("/")
+
+    message = "📢 *New Order Received*\n\n"
+    for item in cart:
+        message += f"🔹 {item['name']} - ₹{item['price']}\n"
+
+    message += f"\n💰 *UTR:* {utr}"
+
     try:
-        name = request.form.get("name", "Unknown")
-        email = request.form.get("email", "")
-        utr = request.form.get("utr", "")
-        cart = session.get("cart", [])
-        placeholders = ",".join("?"*len(cart)) if cart else "0"
-        conn = get_db()
-        cur = conn.cursor()
-        if cart:
-            cur.execute(f"SELECT SUM(price) as s FROM products WHERE id IN ({placeholders})", cart)
-            total = cur.fetchone()["s"] or 0
-        else:
-            total = 0
-        conn.close()
+        bot.send_message(chat_id=CHAT_ID, text=message, parse_mode="Markdown")
+    except:
+        pass
 
-        # Telegram notification
-        bot_token = os.environ.get("BOT_TOKEN")
-        chat_id = os.environ.get("CHAT_ID")
-        if bot_token and chat_id:
-            text = f"🔔 New payment submission\nName: {name}\nEmail: {email}\nAmount: ₹{total}\nUTR: {utr}"
-            try:
-                requests.post(f"https://api.telegram.org/bot{bot_token}/sendMessage",
-                              json={"chat_id": chat_id, "text": text})
-            except Exception:
-                app.logger.exception("Telegram send failed")
+    session["cart"] = []
+    return render_template("utr_submitted.html")
 
-        # clear cart (optional)
-        session.pop("cart", None)
 
-        return render_template("utr_submitted.html", name=name, amount=total)
-    except Exception:
-        app.logger.exception("Error in submit_utr")
-        return "Internal server error", 500
-
-# Admin
-@app.route("/admin/login", methods=["GET","POST"])
+# ------------------------------------------
+# ADMIN LOGIN
+# ------------------------------------------
+@app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        user = request.form.get("username")
-        pwd = request.form.get("password")
-        if user == os.environ.get("ADMIN_USER", "admin") and pwd == os.environ.get("ADMIN_PASS", "12345"):
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if username == "admin" and password == "12345":
             session["admin"] = True
-            return redirect(url_for("admin_dashboard"))
+            return redirect("/admin/dashboard")
         else:
-            flash("Invalid credentials", "error")
-            return render_template("admin_login.html")
+            return render_template("admin_login.html", error=True)
+
     return render_template("admin_login.html")
 
+
+# ------------------------------------------
+# ADMIN DASHBOARD
+# ------------------------------------------
 @app.route("/admin/dashboard")
-def admin_dashboard():
+def dashboard():
     if not session.get("admin"):
-        return redirect(url_for("admin_login"))
-    products = query_products()
-    return render_template("dashboard.html", products=products)
+        return redirect("/admin/login")
 
-@app.route("/admin/edit/<int:pid>", methods=["GET","POST"])
-def admin_edit(pid):
+    return render_template("dashboard.html", plans=plans)
+
+
+# ------------------------------------------
+# EDIT PRODUCT
+# ------------------------------------------
+@app.route("/admin/edit/<int:id>", methods=["GET", "POST"])
+def edit_product(id):
     if not session.get("admin"):
-        return redirect(url_for("admin_login"))
-    p = get_product(pid)
-    if not p:
-        return "Product not found", 404
+        return redirect("/admin/login")
+
+    plan = next((p for p in plans if p["id"] == id), None)
+
+    if not plan:
+        return "Product not found"
+
     if request.method == "POST":
-        name = request.form.get("name")
-        price = int(request.form.get("price") or 0)
-        image = request.form.get("image")
-        conn = get_db()
-        cur = conn.cursor()
-        cur.execute("UPDATE products SET name=?, price=?, image=? WHERE id=?", (name, price, image, pid))
-        conn.commit()
-        conn.close()
-        return redirect(url_for("admin_dashboard"))
-    return render_template("edit_product.html", product=p)
+        plan["name"] = request.form.get("name")
+        plan["price"] = int(request.form.get("price"))
+        plan["stock"] = int(request.form.get("stock"))
+        plan["img"] = request.form.get("img")
 
+        return redirect("/admin/dashboard")
+
+    return render_template("edit_product.html", plan=plan)
+
+
+# ------------------------------------------
+# LOGOUT
+# ------------------------------------------
 @app.route("/admin/logout")
-def admin_logout():
+def logout():
     session.pop("admin", None)
-    return redirect(url_for("index"))
+    return redirect("/")
 
-# serve favicon (optional)
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static','img'), 'favicon.ico')
 
-# health
-@app.route("/_health")
-def health():
-    return "ok"
-
+# RUN APP
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True)
