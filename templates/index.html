@@ -1,23 +1,21 @@
 {% extends "base.html" %}
+{% block title %}Home — OTT Store{% endblock %}
 {% block content %}
-
-<h2 class="title">Our OTT Plans</h2>
-
-<div class="products">
-
-{% for p in products %}
-<div class="card">
-    <img src="/static/img/{{ p[3] }}" class="product-img">
-    <h3>{{ p[1] }}</h3>
-    <p>₹{{ p[2] }}</p>
-
-    <div class="btn-row">
-        <a href="/add-to-cart/{{ p[0] }}" class="btn">Add to Cart</a>
-        <a href="/buy-now/{{ p[0] }}" class="btn2">Buy Now</a>
-    </div>
-</div>
-{% endfor %}
-
-</div>
-
+  <h1>Welcome to OTT Store</h1>
+  <p>Choose a plan below</p>
+  <div class="plans-grid">
+    {% for p in plans %}
+      <article class="card">
+        <img class="provider-logo" src="{{ url_for('static', filename='img/' ~ p.logo) }}" alt="{{ p.name }}">
+        <h3>{{ p.name }}</h3>
+        <div class="muted">{{ p.desc }}</div>
+        <div class="price">₹{{ p.price }}</div>
+        <div class="actions">
+          <a class="btn outlined" href="{{ url_for('plan_details', plan_id=p.id) }}">Details</a>
+          <a class="btn" href="{{ url_for('add_to_cart', plan_id=p.id) }}">Add to cart</a>
+          <a class="btn primary" href="{{ url_for('buy_now', plan_id=p.id) }}">Buy now</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
 {% endblock %}
