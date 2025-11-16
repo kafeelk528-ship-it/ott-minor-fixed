@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
+
 <h2>Checkout</h2>
-<div class="card">
-  <div class="small">Pay using UPI / Bank QR shown below. After payment enter UTR/ref no.</div>
-  <img src="{{ url_for('static', filename='img/' + qr) }}" style="width:220px;margin-top:12px">
-  <form method="post" action="{{ url_for('submit_utr') }}" style="margin-top:12px">
-    <input name="name" placeholder="Your name" required style="padding:8px;width:100%;margin-bottom:8px">
-    <input name="phone" placeholder="Phone" required style="padding:8px;width:100%;margin-bottom:8px">
-    <input name="utr" placeholder="Enter UTR / Transaction ID" required style="padding:8px;width:100%;margin-bottom:8px">
-    <button class="btn" type="submit">Submit UTR</button>
-  </form>
-</div>
+<p>Total Amount: <strong>₹{{ amount }}</strong></p>
+
+<img src="/static/img/qr.png" class="qr">
+
+<form action="/submit_utr" method="POST" class="utr-form">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <input type="text" name="utr" placeholder="Enter UTR Number" required>
+    <button type="submit" class="btn2">Submit Payment</button>
+</form>
+
 {% endblock %}
