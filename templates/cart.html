@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
+
 <h2>Your Cart</h2>
-{% if items %}
-  <div>
-    {% for i in items %}
-      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <strong>{{ i.name }}</strong><div class="small">₹{{ i.price }}</div>
-        </div>
-        <div>
-          <a href="{{ url_for('cart_remove', pid=i.id) }}" class="btn ghost">Remove</a>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-  <div style="margin-top:12px">Total: <strong>₹{{ total }}</strong></div>
-  <div style="margin-top:12px"><a class="btn" href="{{ url_for('checkout') }}">Proceed to Checkout</a></div>
+
+{% if products|length == 0 %}
+<p>No items added.</p>
 {% else %}
-  <div class="card">Your cart is empty.</div>
+
+<ul class="cart-list">
+{% for p in products %}
+<li>{{ p[1] }} — ₹{{ p[2] }}</li>
+{% endfor %}
+</ul>
+
+<h3>Total: ₹{{ total }}</h3>
+
+<a href="/checkout" class="btn2">Proceed to Pay</a>
+
 {% endif %}
+
 {% endblock %}
