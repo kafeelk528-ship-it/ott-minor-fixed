@@ -1,3 +1,6 @@
-
-// minimal interactions
-function toggleCart(){ const c=document.querySelector('#cart'); if(c) c.classList.toggle('show'); }
+// static/js/main.js - tiny behaviours
+document.addEventListener("DOMContentLoaded", function () {
+  // nothing heavy yet; placeholder
+  // you can add UI interactions here
+  console.log("main.js loaded");
+});
