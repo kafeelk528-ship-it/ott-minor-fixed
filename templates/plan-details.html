@@ -1,14 +1,14 @@
 {% extends "base.html" %}
+{% block title %}{{ plan.name }} — Details{% endblock %}
 {% block content %}
-<div class="card">
-  <img class="logo" src="{{ url_for('static', filename='img/' + plan.logo) }}" alt="">
+<div class="plan-detail">
+  <img src="{{ url_for('static', filename='img/' ~ plan.logo) }}" alt="" class="detail-logo">
   <h2>{{ plan.name }}</h2>
-  <div class="small">{{ plan.desc }}</div>
-  <div class="price">₹{{ plan.price }}</div>
-  <div style="margin-top:12px">
-    <a class="btn" href="{{ url_for('add_to_cart', pid=plan.id) }}">Add to cart</a>
-    <a class="btn ghost" href="{{ url_for('buy_now', pid=plan.id) }}">Buy Now</a>
+  <p class="muted">{{ plan.desc }}</p>
+  <div class="price large">₹{{ plan.price }}</div>
+  <div class="actions">
+    <a class="btn" href="{{ url_for('add_to_cart', plan_id=plan.id) }}">Add to Cart</a>
+    <a class="btn primary" href="{{ url_for('buy_now', plan_id=plan.id) }}">Buy Now</a>
   </div>
-  <div class="small" style="margin-top:8px">Available: {{ plan.stock }}</div>
 </div>
 {% endblock %}
