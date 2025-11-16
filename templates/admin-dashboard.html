@@ -1,26 +1,22 @@
 {% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
 {% block content %}
-
 <h2>Admin Dashboard</h2>
+<p><a class="btn" href="{{ url_for('home') }}">Site</a> <a class="btn" href="{{ url_for('admin_logout') }}">Logout</a></p>
 
-<table class="table">
+<table class="admin-table">
+  <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Logo</th><th>Available</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for p in plans %}
     <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Image</th>
-        <th>Edit</th>
-    </tr>
-
-    {% for p in products %}
-    <tr>
-        <td>{{ p[0] }}</td>
-        <td>{{ p[1] }}</td>
-        <td>₹{{ p[2] }}</td>
-        <td>{{ p[3] }}</td>
-        <td><a href="/admin/edit/{{ p[0] }}" class="btn2">Edit</a></td>
+      <td>{{ p.id }}</td>
+      <td>{{ p.name }}</td>
+      <td>₹{{ p.price }}</td>
+      <td><img src="{{ url_for('static', filename='img/' ~ p.logo) }}" style="height:32px"></td>
+      <td>{{ 'Yes' if p.available else 'No' }}</td>
+      <td><a href="{{ url_for('admin_edit', plan_id=p.id) }}" class="small-link">Edit</a></td>
     </tr>
     {% endfor %}
+  </tbody>
 </table>
-
 {% endblock %}
