@@ -1,189 +1,228 @@
-from flask import Flask, render_template, redirect, request, session, url_for
-import telegram
+from flask import Flask, render_template, redirect, url_for, session, request
+import sqlite3
+import os
+import requests
 
 app = Flask(__name__)
-app.secret_key = "supersecret123"
+app.secret_key = os.getenv("SECRET_KEY", "testsecret")
 
-# Telegram Bot Details
-BOT_TOKEN = "8162787624:AAGlBqWs32zSKFd76PNXjBT-e66Y9mh0nY4"
-CHAT_ID = "1857783746"
-bot = telegram.Bot(token=BOT_TOKEN)
+# ==============================
+# DATABASE INITIALIZATION
+# ==============================
+def init_db():
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
 
-# PRODUCT DATABASE
-plans = [
-    {"id": 1, "name": "Netflix Premium", "price": 199, "stock": 100, "img": "netflix.png", "desc": "Premium UHD Plan"},
-    {"id": 2, "name": "Amazon Prime", "price": 149, "stock": 100, "img": "prime.png", "desc": "Prime Video + Delivery"},
-    {"id": 3, "name": "Disney+ Hotstar", "price": 99, "stock": 100, "img": "hotstar.png", "desc": "Premium + Sports"},
-    {"id": 4, "name": "Sony Liv Premium", "price": 89, "stock": 100, "img": "sonyliv.png", "desc": "Premium Plan"}
-]
+    c.execute("""
+        CREATE TABLE IF NOT EXISTS products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            price INTEGER,
+            description TEXT,
+            img TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
 
 
-# ------------------------------------------
+init_db()
+
+
+# ==============================
 # HOME PAGE
-# ------------------------------------------
+# ==============================
 @app.route("/")
 def home():
-    return render_template("index.html", plans=plans)
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM products")
+    products = c.fetchall()
+    conn.close()
+
+    return render_template("index.html", products=products)
 
 
-# ------------------------------------------
-# VIEW ALL PLANS
-# ------------------------------------------
-@app.route("/plans")
-def all_plans():
-    return render_template("plans.html", plans=plans)
+# ==============================
+# PRODUCT DETAILS PAGE
+# ==============================
+@app.route("/plan/<int:pid>")
+def plan(pid):
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM products WHERE id=?", (pid,))
+    product = c.fetchone()
+    conn.close()
+
+    return render_template("plan.html", product=product)
 
 
-# ------------------------------------------
-# PRODUCT DETAILS
-# ------------------------------------------
-@app.route("/plan/<int:id>")
-def plan_details(id):
-    plan = next((p for p in plans if p["id"] == id), None)
-    if not plan:
-        return "Plan not found"
-    return render_template("plan-details.html", plan=plan)
+# ==============================
+# ADD TO CART
+# ==============================
+@app.route("/add-to-cart/<int:pid>")
+def add_to_cart(pid):
+    if "cart" not in session:
+        session["cart"] = []
+
+    session["cart"].append(pid)
+    session.modified = True
+
+    return redirect(url_for("cart"))
 
 
-# ------------------------------------------
-# CART SYSTEM
-# ------------------------------------------
-@app.route("/add-to-cart/<int:id>")
-def add_to_cart(id):
-    plan = next((p for p in plans if p["id"] == id), None)
-    if not plan:
-        return redirect("/")
-
-    cart = session.get("cart", [])
-    cart.append(plan)
-    session["cart"] = cart
-
-    return redirect("/")
-
-
-@app.route("/cart")
-def cart_view():
-    cart = session.get("cart", [])
-    total = sum(item["price"] for item in cart)
-    return render_template("cart.html", cart=cart, total=total)
-
-
-@app.route("/remove/<int:id>")
-def remove_item(id):
-    cart = session.get("cart", [])
-    cart = [item for item in cart if item["id"] != id]
-    session["cart"] = cart
-    return redirect("/cart")
-
-
-# ------------------------------------------
+# ==============================
 # BUY NOW
-# ------------------------------------------
-@app.route("/buy-now/<int:id>")
-def buy_now(id):
-    plan = next((p for p in plans if p["id"] == id), None)
-    if not plan:
-        return redirect("/")
-    session["cart"] = [plan]
-    return redirect("/checkout")
+# ==============================
+@app.route("/buy-now/<int:pid>")
+def buy_now(pid):
+    session["cart"] = [pid]
+    return redirect(url_for("checkout"))
 
 
-# ------------------------------------------
-# CHECKOUT
-# ------------------------------------------
+# ==============================
+# CART PAGE
+# ==============================
+@app.route("/cart")
+def cart():
+    cart_items = []
+    total = 0
+
+    if "cart" in session:
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+
+        for pid in session["cart"]:
+            c.execute("SELECT * FROM products WHERE id=?", (pid,))
+            item = c.fetchone()
+            if item:
+                cart_items.append(item)
+                total += item[2]
+
+        conn.close()
+
+    return render_template("cart.html", cart_items=cart_items, total=total)
+
+
+# ==============================
+# CHECKOUT PAGE
+# ==============================
 @app.route("/checkout")
 def checkout():
-    return render_template("checkout.html")
+    qr_image = "/static/img/qr.png"
+    total = 0
+
+    if "cart" in session:
+        conn = sqlite3.connect("database.db")
+        c = conn.cursor()
+
+        for pid in session["cart"]:
+            c.execute("SELECT price FROM products WHERE id=?", (pid,))
+            price = c.fetchone()
+            if price:
+                total += price[0]
+
+        conn.close()
+
+    return render_template("checkout.html", total=total, qr_image=qr_image)
 
 
-# ------------------------------------------
-# SUBMIT UTR (SENDS TELEGRAM MESSAGE)
-# ------------------------------------------
+# ==============================
+# SUBMIT UTR + TELEGRAM NOTIFICATION
+# ==============================
 @app.route("/submit_utr", methods=["POST"])
 def submit_utr():
     utr = request.form.get("utr")
-    cart = session.get("cart", [])
+    email = request.form.get("email")
 
-    if not cart:
-        return redirect("/")
+    TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+    CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-    message = "📢 *New Order Received*\n\n"
-    for item in cart:
-        message += f"🔹 {item['name']} - ₹{item['price']}\n"
+    message = f"🟢 NEW PAYMENT\n\nUTR: {utr}\nEmail: {email}"
 
-    message += f"\n💰 *UTR:* {utr}"
-
+    # Send Telegram message
     try:
-        bot.send_message(chat_id=CHAT_ID, text=message, parse_mode="Markdown")
-    except:
-        pass
+        requests.post(
+            f"https://api.telegram.org/bot{TOKEN}/sendMessage",
+            json={"chat_id": CHAT_ID, "text": message}
+        )
+    except Exception as e:
+        print("Telegram error:", e)
 
-    session["cart"] = []
-    return render_template("utr_submitted.html")
+    return render_template("payment_success.html")
 
 
-# ------------------------------------------
+# ==============================
 # ADMIN LOGIN
-# ------------------------------------------
+# ==============================
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        user = request.form["username"]
+        pwd = request.form["password"]
 
-        if username == "admin" and password == "12345":
+        if (user == os.getenv("ADMIN_USER")) and (pwd == os.getenv("ADMIN_PASS")):
             session["admin"] = True
-            return redirect("/admin/dashboard")
+            return redirect(url_for("admin_dashboard"))
         else:
-            return render_template("admin_login.html", error=True)
+            return render_template("admin_login.html", error="Invalid Credentials")
 
     return render_template("admin_login.html")
 
 
-# ------------------------------------------
+# ==============================
 # ADMIN DASHBOARD
-# ------------------------------------------
+# ==============================
 @app.route("/admin/dashboard")
-def dashboard():
-    if not session.get("admin"):
-        return redirect("/admin/login")
+def admin_dashboard():
+    if "admin" not in session:
+        return redirect(url_for("admin_login"))
 
-    return render_template("dashboard.html", plans=plans)
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM products")
+    products = c.fetchall()
+    conn.close()
+
+    return render_template("dashboard.html", products=products)
 
 
-# ------------------------------------------
+# ==============================
 # EDIT PRODUCT
-# ------------------------------------------
-@app.route("/admin/edit/<int:id>", methods=["GET", "POST"])
-def edit_product(id):
-    if not session.get("admin"):
-        return redirect("/admin/login")
+# ==============================
+@app.route("/admin/edit/<int:pid>", methods=["GET", "POST"])
+def edit_product(pid):
+    if "admin" not in session:
+        return redirect(url_for("admin_login"))
 
-    plan = next((p for p in plans if p["id"] == id), None)
-
-    if not plan:
-        return "Product not found"
+    conn = sqlite3.connect("database.db")
+    c = conn.cursor()
 
     if request.method == "POST":
-        plan["name"] = request.form.get("name")
-        plan["price"] = int(request.form.get("price"))
-        plan["stock"] = int(request.form.get("stock"))
-        plan["img"] = request.form.get("img")
+        name = request.form["name"]
+        price = request.form["price"]
+        desc = request.form["description"]
+        img = request.form["img"]
 
-        return redirect("/admin/dashboard")
+        c.execute(
+            "UPDATE products SET name=?, price=?, description=?, img=? WHERE id=?",
+            (name, price, desc, img, pid)
+        )
+        conn.commit()
+        conn.close()
 
-    return render_template("edit_product.html", plan=plan)
+        return redirect(url_for("admin_dashboard"))
+
+    c.execute("SELECT * OF products WHERE id=?", (pid,))
+    product = c.fetchone()
+    conn.close()
+
+    return render_template("edit_product.html", product=product)
 
 
-# ------------------------------------------
-# LOGOUT
-# ------------------------------------------
-@app.route("/admin/logout")
-def logout():
-    session.pop("admin", None)
-    return redirect("/")
-
-
-# RUN APP
+# ==============================
+# RUN FLASK
+# ==============================
 if __name__ == "__main__":
     app.run(debug=True)
