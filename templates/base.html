@@ -45,7 +45,7 @@
 </div>
 
 <footer>
-    <p>© {{ now().year }} OTT Store</p>
+    <p>© {% if current_year %}{{ current_year }}{% else %}2025{% endif %} OTT Store</p>
 </footer>
 
 </body>
