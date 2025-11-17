@@ -1,23 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container py-5">
-    <h2 class="text-center mb-4">Payment Submitted Successfully</h2>
+<h2>Payment Submitted!</h2>
 
-    {% if ok %}
-        <div class="alert alert-success">Your payment details were sent to the admin!</div>
-    {% else %}
-        <div class="alert alert-danger">Failed to send payment. But your invoice is still generated.</div>
-    {% endif %}
+{% if telegram_ok %}
+    <p style="color:green;">Notification sent to seller successfully.</p>
+{% else %}
+    <p style="color:red;">Telegram notification failed.</p>
+{% endif %}
 
-    <h3 class="mt-4">Download Your Invoice</h3>
-    <a href="{{ invoice_url }}" download class="btn btn-primary mt-2">
-        📄 Download Invoice PDF
-    </a>
-
-    <hr>
-
-    <a href="/" class="btn btn-success">Go Back Home</a>
-</div>
+<h3>Your Invoice</h3>
+<a href="{{ invoice_url }}" class="btn">Download Invoice PDF</a>
 
 {% endblock %}
