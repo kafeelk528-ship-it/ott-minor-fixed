@@ -1,14 +1,18 @@
 {% extends "base.html" %}
-{% block title %}{{ plan.name }} — Details{% endblock %}
 {% block content %}
-<div class="plan-detail">
-  <img src="{{ url_for('static', filename='img/' ~ plan.logo) }}" alt="" class="detail-logo">
-  <h2>{{ plan.name }}</h2>
-  <p class="muted">{{ plan.desc }}</p>
-  <div class="price large">₹{{ plan.price }}</div>
-  <div class="actions">
-    <a class="btn" href="{{ url_for('add_to_cart', plan_id=plan.id) }}">Add to Cart</a>
-    <a class="btn primary" href="{{ url_for('buy_now', plan_id=plan.id) }}">Buy Now</a>
-  </div>
-</div>
+
+<h2>{{ plan.name }}</h2>
+
+<img src="{{ url_for('static', filename='img/' + plan.logo) }}" style="width:200px;">
+
+<p>{{ plan.desc }}</p>
+<p><b>Price: ₹{{ plan.price }}</b></p>
+
+{% if plan.available %}
+    <a href="/add-to-cart/{{ plan.id }}" class="btn-green btn">Add to Cart</a>
+    <a href="/buy-now/{{ plan.id }}" class="btn btn-blue">Buy Now</a>
+{% else %}
+    <p style="color:red;">Not Available</p>
+{% endif %}
+
 {% endblock %}
