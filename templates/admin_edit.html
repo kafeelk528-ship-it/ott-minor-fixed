@@ -1,17 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Edit {{ plan.name }}{% endblock %}
 {% block content %}
-<h2>Edit Plan: {{ plan.name }}</h2>
-<form method="post" class="form">
-  <label>Name</label>
-  <input name="name" value="{{ plan.name }}" required>
-  <label>Price</label>
-  <input type="number" name="price" value="{{ plan.price }}" required>
-  <label>Description</label>
-  <input name="desc" value="{{ plan.desc }}">
-  <label>Logo filename (put file in static/img/)</label>
-  <input name="logo" value="{{ plan.logo }}">
-  <label><input type="checkbox" name="available" {% if plan.available %}checked{% endif %}> Available</label>
-  <button class="btn primary" type="submit">Save</button>
+
+<h2>Edit Product</h2>
+
+<form method="POST">
+
+    <label>Name</label>
+    <input type="text" name="name" value="{{ plan.name }}"><br><br>
+
+    <label>Price</label>
+    <input type="number" name="price" value="{{ plan.price }}"><br><br>
+
+    <label>Description</label>
+    <input type="text" name="desc" value="{{ plan.desc }}"><br><br>
+
+    <label>Logo Filename (img folder)</label>
+    <input type="text" name="logo" value="{{ plan.logo }}"><br><br>
+
+    <label>Available</label>
+    <input type="checkbox" name="available" {% if plan.available %}checked{% endif %}><br><br>
+
+    <button class="btn-green btn">Save</button>
 </form>
+
 {% endblock %}
