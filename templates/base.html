@@ -4,48 +4,36 @@
     <meta charset="UTF-8">
     <title>OTT Store</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        body { font-family: Arial, sans-serif; background: #f8f9fa; margin:0; padding:0; }
-        header, footer { background:#111; color:white; padding:15px; text-align:center; }
-        .container { width:90%; margin:auto; padding:20px; }
-        .nav { margin-top:10px; }
-        .nav a { color:white; margin:0 10px; text-decoration:none; }
-        .card { background:white; padding:15px; border-radius:8px; box-shadow:0 0 5px #ccc; margin:10px; }
-        .btn { display:inline-block; padding:10px 15px; border-radius:5px; background:#007bff; color:white; text-decoration:none; }
-        .btn-red { background:#dc3545; }
-        .btn-green { background:#28a745; }
-        img { max-width:100%; }
-        .product-img { height:90px; object-fit:contain; display:block; margin:auto; }
-    </style>
 </head>
 <body>
 
-<header>
-    <h2>OTT STORE</h2>
-    <div class="nav">
-        <a href="/">Home</a>
-        <a href="/plans">Plans</a>
-        <a href="/cart">Cart</a>
-        <a href="/admin/login">Admin</a>
-    </div>
-</header>
+<nav class="navbar">
+    <a href="{{ url_for('home') }}" class="logo">
+        <img src="{{ url_for('static', filename='img/logo-dark.png') }}" height="40">
+    </a>
+
+    <ul class="nav-links">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('plans_page') }}">Plans</a></li>
+        <li><a href="{{ url_for('cart_page') }}">Cart</a></li>
+        <li><a href="{{ url_for('admin_login') }}">Admin</a></li>
+    </ul>
+</nav>
 
 <div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for cat, msg in messages %}
-          <div style="background:#ffeeba;padding:10px;margin:10px 0;border-left:5px solid #856404;">
-            {{ msg }}
-          </div>
-        {% endfor %}
-      {% endif %}
+        {% if messages %}
+            {% for cat, msg in messages %}
+                <div class="alert {{ cat }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
     {% endwith %}
-    
+
     {% block content %}{% endblock %}
 </div>
 
 <footer>
-    <p>© {% if current_year %}{{ current_year }}{% else %}2025{% endif %} OTT Store</p>
+    <p>© {{ 2025 }} OTT Store</p>
 </footer>
 
 </body>
