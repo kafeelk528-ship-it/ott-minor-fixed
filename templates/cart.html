@@ -1,23 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Cart — OTT Store{% endblock %}
 {% block content %}
+
 <h2>Your Cart</h2>
-{% if cart %}
-  <ul class="cart-list">
-    {% for item in cart %}
-      <li>
-        <img src="{{ url_for('static', filename='img/' ~ item.logo) }}" alt="" class="cart-thumb">
-        <strong>{{ item.name }}</strong> — ₹{{ item.price }}
-        <a class="small-link" href="{{ url_for('remove_cart', plan_id=item.id) }}">Remove</a>
-      </li>
-    {% endfor %}
-  </ul>
-  <div class="cart-total">Total: ₹{{ total }}</div>
-  <div class="cart-actions">
-    <a class="btn" href="{{ url_for('plans_page') }}">Continue Shopping</a>
-    <a class="btn primary" href="{{ url_for('checkout') }}">Checkout</a>
-  </div>
+
+{% if not cart %}
+<p>No items in cart.</p>
 {% else %}
-  <p>Your cart is empty. <a href="{{ url_for('plans_page') }}">Browse plans</a></p>
+
+<table border="1" cellpadding="10" width="100%">
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Remove</th>
+    </tr>
+
+    {% for item in cart %}
+    <tr>
+        <td><img src="{{ url_for('static', filename='img/' + item.logo) }}" style="height:50px;"></td>
+        <td>{{ item.name }}</td>
+        <td>₹{{ item.price }}</td>
+        <td><a href="/cart/remove/{{ item.id }}" class="btn-red btn">X</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Total: ₹{{ total }}</h3>
+
+<a href="/checkout" class="btn-green btn">Proceed to Checkout</a>
+
 {% endif %}
+
 {% endblock %}
