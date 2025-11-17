@@ -1,37 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Checkout — OTT Store{% endblock %}
 {% block content %}
+
 <h2>Checkout</h2>
 
-{% if cart %}
-  <div class="checkout-items">
-    {% for i in cart %}
-      <div class="checkout-item">
-        <img src="{{ url_for('static', filename='img/' ~ i.logo) }}" alt="" class="checkout-thumb">
-        <div>
-          <strong>{{ i.name }}</strong>
-          <div class="muted">{{ i.desc }}</div>
-        </div>
-        <div class="price">₹{{ i.price }}</div>
-      </div>
-    {% endfor %}
-  </div>
-  <div class="total">Total: ₹{{ total }}</div>
+<h3>Total Amount: ₹{{ total }}</h3>
 
-  <h3>Pay by UPI</h3>
-  <img src="{{ qr_url }}" alt="QR" class="qr-img">
-  <form action="{{ url_for('submit_utr') }}" method="post" class="utr-form">
-    <label>Name (optional)</label>
-    <input name="name" placeholder="Your name">
-    <label>Phone (required)</label>
-    <input name="phone" placeholder="Mobile number" required>
+<p>Scan QR and pay:</p>
+
+<img src="{{ qr_url }}" style="width:250px; border:2px solid black;">
+
+<form method="POST" action="/submit_utr" style="margin-top:25px;">
+    <label>Name</label>
+    <input type="text" name="name" required><br><br>
+
+    <label>Phone</label>
+    <input type="text" name="phone" required><br><br>
+
     <label>Email (optional)</label>
-    <input name="email" placeholder="email@example.com">
-    <label>UTR / Transaction ID (required)</label>
-    <input name="utr" placeholder="UTR/Transaction ID" required>
-    <button class="btn primary" type="submit">Submit payment UTR</button>
-  </form>
-{% else %}
-  <p>No items in cart. <a href="{{ url_for('plans_page') }}">Browse plans</a></p>
-{% endif %}
+    <input type="email" name="email"><br><br>
+
+    <label>Enter UTR Number</label>
+    <input type="text" name="utr" required><br><br>
+
+    <button class="btn-green btn">Submit Payment</button>
+</form>
+
 {% endblock %}
