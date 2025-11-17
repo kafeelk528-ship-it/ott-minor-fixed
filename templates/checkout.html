@@ -1,28 +1,18 @@
-{% extends "base.html" %}
-{% block content %}
+@app.route("/checkout")
+def checkout():
+    cart_ids = session.get("cart", [])
+    if not cart_ids:
+        flash("Cart is empty. Please add a plan first.", "error")
+        return redirect(url_for("home"))
 
-<h2>Checkout</h2>
+    cart_items = [get_plan_by_id(pid) for pid in cart_ids if get_plan_by_id(pid)]
+    if not cart_items:
+        flash("Invalid items in cart.", "error")
+        return redirect(url_for("home"))
 
-<h3>Total Amount: ₹{{ total }}</h3>
+    total = sum(item["price"] for item in cart_items)
 
-<p>Scan QR and pay:</p>
-
-<img src="{{ qr_url }}" style="width:250px; border:2px solid black;">
-
-<form method="POST" action="/submit_utr" style="margin-top:25px;">
-    <label>Name</label>
-    <input type="text" name="name" required><br><br>
-
-    <label>Phone</label>
-    <input type="text" name="phone" required><br><br>
-
-    <label>Email (optional)</label>
-    <input type="email" name="email"><br><br>
-
-    <label>Enter UTR Number</label>
-    <input type="text" name="utr" required><br><br>
-
-    <button class="btn-green btn">Submit Payment</button>
-</form>
-
-{% endblock %}
+    return render_template("checkout.html",
+                           cart=cart_items,
+                           total=total,
+                           qr_url=url_for("static", filename="img/qr.png"))
