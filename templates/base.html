@@ -1,46 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>{% block title %}OTT Store{% endblock %}</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>OTT Store</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f9fa; margin:0; padding:0; }
+        header, footer { background:#111; color:white; padding:15px; text-align:center; }
+        .container { width:90%; margin:auto; padding:20px; }
+        .nav { margin-top:10px; }
+        .nav a { color:white; margin:0 10px; text-decoration:none; }
+        .card { background:white; padding:15px; border-radius:8px; box-shadow:0 0 5px #ccc; margin:10px; }
+        .btn { display:inline-block; padding:10px 15px; border-radius:5px; background:#007bff; color:white; text-decoration:none; }
+        .btn-red { background:#dc3545; }
+        .btn-green { background:#28a745; }
+        img { max-width:100%; }
+        .product-img { height:90px; object-fit:contain; display:block; margin:auto; }
+    </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="{{ url_for('home') }}">
-        <img src="{{ url_for('static', filename='img/logo-dark.png') }}" alt="logo" class="logo">
-      </a>
-      <nav class="nav">
-        <a class="nav-link" href="{{ url_for('plans_page') }}">Plans</a>
-        <a class="nav-link" href="{{ url_for('contact_page') }}">Contact</a>
-        <a class="nav-link" href="{{ url_for('cart_page') }}">Cart ({{ session.get('cart')|length if session.get('cart') else 0 }})</a>
-        <a class="nav-link" href="{{ url_for('admin_login') }}">Admin</a>
-      </nav>
-    </div>
-  </header>
 
-  <main class="container">
+<header>
+    <h2>OTT STORE</h2>
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/plans">Plans</a>
+        <a href="/cart">Cart</a>
+        <a href="/admin/login">Admin</a>
+    </div>
+</header>
+
+<div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="flash-wrap">
         {% for cat, msg in messages %}
-          <div class="flash {{ cat }}">{{ msg }}</div>
+          <div style="background:#ffeeba;padding:10px;margin:10px 0;border-left:5px solid #856404;">
+            {{ msg }}
+          </div>
         {% endfor %}
-        </div>
       {% endif %}
     {% endwith %}
-
+    
     {% block content %}{% endblock %}
-  </main>
+</div>
 
-  <footer class="site-footer">
-    <div class="container">
-      © {{ now().year if now is defined else "" }} OTT Store — Demo
-    </div>
-  </footer>
+<footer>
+    <p>© {{ now().year }} OTT Store</p>
+</footer>
 
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
