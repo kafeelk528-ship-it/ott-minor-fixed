@@ -1,0 +1,18 @@
+@app.route("/submit_utr", methods=["POST"])
+def submit_utr():
+    name = request.form.get("name", "").strip()
+    phone = request.form.get("phone", "").strip()
+    utr = request.form.get("utr", "").strip()
+    email = request.form.get("email", "").strip()
+
+    cart_ids = session.get("cart", [])
+    if not cart_ids:
+        flash("Cart is empty.", "error")
+        return redirect(url_for("home"))
+
+    cart_items = [get_plan_by_id(pid) for pid in cart_ids if get_plan_by_id(pid)]
+    if not cart_items:
+        flash("Invalid cart items.", "error")
+        return redirect(url_for("home"))
+
+    total = sum(item["price"] for item in cart_items)
