@@ -1,26 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Edit Product</h2>
+<h1>Edit Plan</h1>
 
-<form method="POST">
-
+<form method="post" class="form">
     <label>Name</label>
-    <input type="text" name="name" value="{{ plan.name }}"><br><br>
+    <input type="text" name="name" value="{{ product.name }}" required>
 
     <label>Price</label>
-    <input type="number" name="price" value="{{ plan.price }}"><br><br>
+    <input type="number" name="price" value="{{ product.price }}" required>
 
     <label>Description</label>
-    <input type="text" name="desc" value="{{ plan.desc }}"><br><br>
+    <input type="text" name="desc" value="{{ product.desc }}" required>
 
-    <label>Logo Filename (img folder)</label>
-    <input type="text" name="logo" value="{{ plan.logo }}"><br><br>
+    <label>Logo File</label>
+    <input type="text" name="logo" value="{{ product.logo }}">
 
-    <label>Available</label>
-    <input type="checkbox" name="available" {% if plan.available %}checked{% endif %}><br><br>
-
-    <button class="btn-green btn">Save</button>
+    <button class="btn" type="submit">Save</button>
 </form>
 
 {% endblock %}
