@@ -1,8 +1,49 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="card">
-  <h2>Payment Submitted</h2>
-  <p>Thank you. Your UTR has been received and admin will verify the order shortly.</p>
-  <a class="btn" href="{{ url_for('home') }}">Back to Home</a>
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            padding: 50px;
+            text-align: center;
+        }
+        .box {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            margin-top: 20px;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h1>Payment Successful!</h1>
+        <p>Your UTR has been submitted successfully.</p>
+
+        <h3>UTR Submitted: <b>{{ utr }}</b></h3>
+
+        <a href="/invoice?utr={{ utr }}" class="btn">
+            Download Invoice (PDF)
+        </a>
+    </div>
+
+</body>
+</html>
