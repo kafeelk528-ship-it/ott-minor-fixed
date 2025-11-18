@@ -1,19 +1,46 @@
-{% extends "base.html" %}
-{% block content %}
+{
+  "plans": [
+    {
+      "id": 1,
+      "name": "Netflix Premium",
+      "price": 199,
+      "logo": "netflix.png",
+      "desc": "4K UHD • 4 Screens • 30 Days",
+      "available": true
+    },
+    {
+      "id": 2,
+      "name": "Amazon Prime Video",
+      "price": 149,
+      "logo": "prime.png",
+      "desc": "Full HD • All Devices • 30 Days",
+      "available": true
+    },
+    {
+      "id": 3,
+      "name": "Disney+ Hotstar Premium",
+      "price": 299,
+      "logo": "hotstar.png",
+      "desc": "Sports + Movies • Premium",
+      "available": true
+    },
+    {
+      "id": 4,
+      "name": "Sony LIV Premium",
+      "price": 129,
+      "logo": "sonyliv.png",
+      "desc": "Full HD • Originals • 30 Days",
+      "available": true
+    },
+    {
+      "id": 5,
+      "name": "Zee5 Premium",
+      "price": 99,
+      "logo": "zee5.png",
+      "desc": "Regional Content • Movies + Shows",
+      "available": true
+    }
+  ],
 
-<h1>Buy Streaming Plans</h1>
-
-<div class="grid">
-    {% for plan in data.plans %}
-    <div class="card">
-        <img src="{{ url_for('static', filename='img/' + plan.logo) }}" alt="{{ plan.name }}" />
-        <h3>{{ plan.name }}</h3>
-        <p>{{ plan.desc }}</p>
-        <p><b>₹{{ plan.price }}</b></p>
-
-        <a class="btn" href="/checkout?plan_id={{ plan.id }}">Buy Now</a>
-    </div>
-    {% endfor %}
-</div>
-
-{% endblock %}
+  "coupons": []
+}
