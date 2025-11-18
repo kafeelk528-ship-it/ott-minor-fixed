@@ -1,12 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Add Product</h2>
-<form method="post" enctype="multipart/form-data">
-  <input name="name" placeholder="Name" required style="padding:8px;width:100%;margin-bottom:8px">
-  <input name="price" placeholder="Price" required style="padding:8px;width:100%;margin-bottom:8px">
-  <input name="stock" placeholder="Stock" required style="padding:8px;width:100%;margin-bottom:8px">
-  <input name="desc" placeholder="Short description" style="padding:8px;width:100%;margin-bottom:8px">
-  <input type="file" name="logo" accept="image/*" style="margin-bottom:8px">
-  <button class="btn" type="submit">Add</button>
+
+<h1>Add New Plan</h1>
+
+<form method="post" class="form">
+
+    <label>Plan Name</label>
+    <input type="text" name="name" required>
+
+    <label>Price</label>
+    <input type="number" name="price" required>
+
+    <label>Description</label>
+    <input type="text" name="desc" required>
+
+    <label>Logo File Name (from static/img)</label>
+    <input type="text" name="logo" placeholder="netflix.png" required>
+
+    <button class="btn" type="submit">Add Plan</button>
 </form>
+
 {% endblock %}
