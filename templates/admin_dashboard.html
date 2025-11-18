@@ -1,29 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Admin Dashboard</h2>
+<h1>Admin Dashboard</h1>
 
-<table border="1" cellpadding="10" width="100%">
-    <tr>
-        <th>Logo</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Status</th>
-        <th>Edit</th>
-    </tr>
+<p><a class="btn" href="{{ url_for('admin_add') }}">Add Plan</a></p>
 
-    {% for p in plans %}
-    <tr>
-        <td><img src="{{ url_for('static', filename='img/' + p.logo) }}" style="height:50px;"></td>
-        <td>{{ p.name }}</td>
-        <td>₹{{ p.price }}</td>
-        <td>{{ "Available" if p.available else "Not Available" }}</td>
-        <td><a href="/admin/edit/{{ p.id }}" class="btn">Edit</a></td>
-    </tr>
-    {% endfor %}
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Logo</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for plan in data.plans %}
+        <tr>
+            <td>{{ plan.id }}</td>
+            <td><img src="{{ url_for('static', filename='img/' + plan.logo) }}" width="70"></td>
+            <td>{{ plan.name }}</td>
+            <td>₹{{ plan.price }}</td>
+            <td>{{ plan.desc }}</td>
+            <td>
+                <a class="btn small" href="/admin_edit/{{ plan.id }}">Edit</a>
+                <a class="btn small danger" href="/admin_delete/{{ plan.id }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
-
-<br>
-<a href="/admin/logout" class="btn-red btn">Logout</a>
 
 {% endblock %}
