@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Featured OTT Plans</h2>
 
-<div style="display:flex; flex-wrap:wrap;">
-    {% for p in plans %}
-    <div class="card" style="width:220px;">
-        <img src="{{ url_for('static', filename='img/' + p.logo) }}" class="product-img">
-        <h3>{{ p.name }}</h3>
-        <p>{{ p.desc }}</p>
-        <p><b>₹{{ p.price }}</b></p>
-        <a href="/plan/{{ p.id }}" class="btn">View Details</a>
+<h1>Choose Your Streaming Plan</h1>
+
+<div class="grid">
+    {% for plan in data.plans %}
+    <div class="card">
+        <img src="{{ url_for('static', filename='img/' + plan.logo) }}" alt="{{ plan.name }}">
+        <h3>{{ plan.name }}</h3>
+        <p>{{ plan.desc }}</p>
+        <p><b>₹{{ plan.price }}</b></p>
+        <a class="btn" href="/checkout?plan_id={{ plan.id }}">Buy Now</a>
     </div>
     {% endfor %}
 </div>
