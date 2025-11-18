@@ -11,26 +11,23 @@
 <body>
 
     <!-- NAVBAR -->
-    <header>
-        <nav class="navbar">
-            <div class="container">
+    <header class="site-header">
+    <div class="container header-inner">
 
-                <!-- FIXED HOME LINK -->
-                <a href="{{ url_for('index') }}" class="logo">
-                    <h2 style="margin: 0; padding: 0;">OTT Platform</h2>
-                </a>
+        <a href="{{ url_for('index') }}" class="logo">OTT Platform</a>
 
-                <ul class="nav-links">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                    <li><a href="{{ url_for('plans') }}">Plans</a></li>
-                    <li><a href="{{ url_for('cart') }}">Cart</a></li>
-                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
-                    <li><a href="{{ url_for('admin_login') }}">Admin</a></li>
-                </ul>
-
-            </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('plans') }}">Plans</a></li>
+                <li><a href="{{ url_for('cart') }}">Cart</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('admin_login') }}">Admin</a></li>
+            </ul>
         </nav>
-    </header>
+
+    </div>
+</header>
 
     <!-- MAIN CONTENT -->
     <main>
