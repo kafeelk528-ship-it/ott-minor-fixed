@@ -1,18 +1,18 @@
-@app.route("/submit_utr", methods=["POST"])
-def submit_utr():
-    name = request.form.get("name", "").strip()
-    phone = request.form.get("phone", "").strip()
-    utr = request.form.get("utr", "").strip()
-    email = request.form.get("email", "").strip()
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit UTR</title>
+</head>
+<body style="text-align:center; padding:50px;">
 
-    cart_ids = session.get("cart", [])
-    if not cart_ids:
-        flash("Cart is empty.", "error")
-        return redirect(url_for("home"))
+    <h2>Submit Your UTR Number</h2>
 
-    cart_items = [get_plan_by_id(pid) for pid in cart_ids if get_plan_by_id(pid)]
-    if not cart_items:
-        flash("Invalid cart items.", "error")
-        return redirect(url_for("home"))
+    <form action="/submit_utr" method="POST">
+        <input type="text" name="utr" placeholder="Enter UTR Number" required
+            style="padding:10px; width:250px;">
+        <br><br>
+        <button type="submit" style="padding:10px 25px;">Submit</button>
+    </form>
 
-    total = sum(item["price"] for item in cart_items)
+</body>
+</html>
