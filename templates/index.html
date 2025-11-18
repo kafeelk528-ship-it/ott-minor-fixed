@@ -21,9 +21,9 @@
         <p class="price">₹{{ plan.price }}</p>
 
         <!-- Buy Button -->
-        <a class="btn" href="/checkout?plan_id={{ plan.id }}">Buy Now</a>
-    </div>
-    {% endfor %}
+       <div class="buttons">
+    <a class="btn btn-secondary" href="/add_to_cart?plan_id={{ plan.id }}">Add to Cart</a>
+    <a class="btn btn-primary" href="/checkout?plan_id={{ plan.id }}">Buy Now</a>
 </div>
 
 {% endblock %}
