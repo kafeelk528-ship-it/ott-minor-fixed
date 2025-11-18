@@ -1,15 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Choose Your Streaming Plan</h1>
+<h1 style="text-align:center; margin-bottom:25px;">Choose Your Streaming Plan</h1>
 
 <div class="grid">
     {% for plan in data.plans %}
     <div class="card">
-        <img src="{{ url_for('static', filename='img/' + plan.logo) }}" alt="{{ plan.name }}">
+
+        <!-- Logo -->
+        <img src="{{ url_for('static', filename='img/' + plan.logo) }}" 
+             alt="{{ plan.name }}">
+
+        <!-- Plan Title -->
         <h3>{{ plan.name }}</h3>
-        <p>{{ plan.desc }}</p>
-        <p><b>₹{{ plan.price }}</b></p>
+
+        <!-- Description -->
+        <p class="desc">{{ plan.desc }}</p>
+
+        <!-- Price -->
+        <p class="price">₹{{ plan.price }}</p>
+
+        <!-- Buy Button -->
         <a class="btn" href="/checkout?plan_id={{ plan.id }}">Buy Now</a>
     </div>
     {% endfor %}
