@@ -5,8 +5,8 @@ from reportlab.pdfgen import canvas
 import requests
 import os
 
-app.secret_key = "ott-secret"
 app = Flask(__name__)
+app.secret_key = "ott-secret"
 
 DATA_FILE = "data.json"
 
