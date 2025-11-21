@@ -67,7 +67,9 @@ def plan_details():
 
 @app.route("/cart")
 def cart():
-    return render_template("cart.html")
+    cart_items = session.get("cart", [])
+    total = sum(item["price"] for item in cart_items)
+    return render_template("cart.html", cart=cart_items, total=total)
 
 
 @app.route("/add_to_cart")
@@ -79,15 +81,12 @@ def add_to_cart():
     if not plan:
         return redirect(url_for("index"))
 
-    cart = session.get("cart", [])
-    cart.append({
-        "id": plan["id"],
-        "name": plan["name"],
-        "price": plan["price"],
-        "logo": plan["logo"]
-    })
+    if "cart" not in session:
+        session["cart"] = []
 
-    session["cart"] = cart
+    session["cart"].append(plan)
+    session.modified = True
+
     return redirect(url_for("cart"))
 
 
