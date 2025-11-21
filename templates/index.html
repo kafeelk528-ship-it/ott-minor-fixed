@@ -1,19 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1 style="text-align:center; margin-bottom:25px;">Choose Your Streaming Plan</h1>
+<h1 style="text-align:center; margin-bottom:30px;">Choose Your Streaming Plan</h1>
 
 <div class="grid">
     {% for plan in data.plans %}
     <div class="card">
 
-        <img src="{{ url_for('static', filename='img/' + plan.logo) }}" 
-             alt="{{ plan.name }}">
+        <img src="{{ url_for('static', filename='img/' + plan.logo) }}" alt="{{ plan.name }}">
 
         <h3>{{ plan.name }}</h3>
-
         <p class="desc">{{ plan.desc }}</p>
-
         <p class="price">₹{{ plan.price }}</p>
 
         <div class="buttons">
@@ -26,4 +23,3 @@
 </div>
 
 {% endblock %}
-
