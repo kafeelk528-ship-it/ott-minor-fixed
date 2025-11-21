@@ -102,12 +102,9 @@ def remove_from_cart(index):
 
 @app.route("/checkout")
 def checkout():
-    data = load_data()
-    plan_id = request.args.get("plan_id", type=int)
-    plan = None
-    if plan_id is not None:
-        plan = next((p for p in data["plans"] if p.get("id") == plan_id), None)
-    return render_template("checkout.html", data=data, plan=plan)
+    cart_items = session.get("cart", [])
+    total = sum(item["price"] for item in cart_items)
+    return render_template("checkout.html", total=total)
 
 
 @app.route("/submit_utr", methods=["GET", "POST"])
