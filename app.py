@@ -277,8 +277,8 @@ def contact():
 
 from datetime import datetime
 
-@app.route("/invoice")
-def invoice():
+@app.route("/download-invoice")
+def download_invoice():
     cart_items = session.get("cart", [])
     total = sum(item["price"] for item in cart_items)
 
