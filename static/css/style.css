@@ -249,10 +249,18 @@ body {
     margin-bottom: 25px;
 }
 
-.hero-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.hero-buttons .btn{
+    min-width:150px;
+    text-align:center;
 }
 
 /* ANIMATION EFFECTS */
