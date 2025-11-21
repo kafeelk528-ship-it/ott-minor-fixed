@@ -1,10 +1,8 @@
-// static/js/main.js - tiny behaviours
+// static/js/main.js - stable animation + safe behaviour
+
 document.addEventListener("DOMContentLoaded", function () {
-  // nothing heavy yet; placeholder
-  // you can add UI interactions here
   console.log("main.js loaded");
-});
-document.addEventListener("DOMContentLoaded", () => {
+
   const cards = document.querySelectorAll(".card");
 
   const revealOnScroll = () => {
@@ -14,11 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (cardTop < windowHeight - 50) {
         card.classList.add("show-card");
+      } else {
+        card.classList.remove("show-card");
       }
     });
   };
 
   window.addEventListener("scroll", revealOnScroll);
-  revealOnScroll();
+  revealOnScroll(); // run on load
 });
-
