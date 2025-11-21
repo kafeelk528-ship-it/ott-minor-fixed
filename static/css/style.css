@@ -293,14 +293,12 @@ body {
     100% { box-shadow: 0 0 0 0 rgba(0,198,255,0); }
 }
 
-/* SCROLL REVEAL ANIMATION */
+/* SAFE SCROLL REVEAL ANIMATION */
 .card {
-    opacity: 0;
-    transform: translateY(40px);
+    transition: all 0.6s ease;
 }
 
 .card.show-card {
-    opacity: 1;
     transform: translateY(0);
-    transition: all 0.6s ease;
+    opacity: 1;
 }
