@@ -90,6 +90,16 @@ def add_to_cart():
     return redirect(url_for("cart"))
 
 
+@app.route("/remove_from_cart/<int:index>")
+def remove_from_cart(index):
+    cart = session.get("cart", [])
+    if 0 <= index < len(cart):
+        cart.pop(index)
+        session["cart"] = cart
+        session.modified = True
+    return redirect(url_for("cart"))
+
+
 @app.route("/checkout")
 def checkout():
     data = load_data()
