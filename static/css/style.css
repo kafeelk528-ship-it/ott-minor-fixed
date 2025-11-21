@@ -142,3 +142,79 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* CHECKOUT PAGE PREMIUM STYLE */
+.checkout-box {
+    max-width: 500px;
+    margin: 40px auto;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.checkout-title {
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+.checkout-sub {
+    color: #ccc;
+    margin-bottom: 25px;
+}
+
+.payment-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.qr-box {
+    background: rgba(0,0,0,0.4);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.qr-image {
+    width: 220px;
+}
+
+.label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.utr-form label {
+    display: block;
+    margin-bottom: 8px;
+    text-align: left;
+}
+
+.utr-form input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: #111;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.pay-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(45deg,#00c6ff,#0072ff);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.pay-btn:hover {
+    opacity: 0.9;
+}
