@@ -305,3 +305,47 @@ body {
         flex-direction:column;
     }
 }
+
+/* ===== FIXED PROFESSIONAL NAVBAR ===== */
+
+.site-header {
+    background: linear-gradient(90deg,#000,#0a1a22);
+    padding: 15px 0;
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: #00eaff;
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #00eaff;
+}
+
+/* Mobile Navbar Fix */
+@media (max-width: 700px){
+    .header-flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
