@@ -310,3 +310,9 @@ body {
     transform: translateY(0);
     opacity: 1;
 }
+
+@media (max-width: 600px){
+    .hero-buttons{
+        flex-direction:column;
+    }
+}
