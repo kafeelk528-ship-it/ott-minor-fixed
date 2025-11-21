@@ -3,23 +3,17 @@
 
 <h1 class="page-title">All Plans</h1>
 
-<div class="grid">
-  {% for plan in data.plans %}
-  <div class="card">
-
-    <img src="{{ url_for('static', filename='img/' + plan.logo) }}">
-
-    <h3>{{ plan.name }}</h3>
-    <p class="desc">{{ plan.desc }}</p>
-    <p class="price">₹{{ plan.price }}</p>
-
-    <div class="buttons">
-      <a class="btn btn-secondary" href="/add_to_cart?plan_id={{ plan.id }}">Add to Cart</a>
-      <a class="btn btn-primary" href="/checkout?plan_id={{ plan.id }}">Buy Now</a>
+<div class="plan-grid">
+    {% for plan in data.plans %}
+    <div class="card">
+        <img src="{{ url_for('static', filename='img/' + plan.logo) }}">
+        <h3>{{ plan.name }}</h3>
+        <p>{{ plan.desc }}</p>
+        <div class="price">₹{{ plan.price }}</div>
+        <a href="/add_to_cart/{{ plan.id }}" class="btn btn-dark">Add to Cart</a>
+        <a href="/checkout/{{ plan.id }}" class="btn btn-primary">Buy Now</a>
     </div>
-
-  </div>
-  {% endfor %}
+    {% endfor %}
 </div>
 
 {% endblock %}
