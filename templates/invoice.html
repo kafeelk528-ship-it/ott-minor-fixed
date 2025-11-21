@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+        }
+
+        .invoice-box {
+            background: white;
+            width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            margin: 0;
+        }
+
+        .details {
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #0072ff;
+            color: white;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="invoice-box">
+    <div class="header">
+        <div>
+            <h2>OTT Minor</h2>
+            <p>Premium Streaming Services</p>
+        </div>
+        <div>
+            <p><strong>Invoice</strong></p>
+            <p>Date: {{ date }}</p>
+        </div>
+    </div>
+
+    <div class="details">
+        <p><strong>Transaction ID:</strong> {{ utr }}</p>
+    </div>
+
+    <table>
+        <tr>
+            <th>Plan</th>
+            <th>Price</th>
+        </tr>
+        {% for item in cart %}
+        <tr>
+            <td>{{ item.name }}</td>
+            <td>₹{{ item.price }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="total">
+        Total Paid: ₹{{ total }}
+    </div>
+</div>
+
+</body>
+</html>
