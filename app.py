@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, send_file, url_for
+from flask import Flask, render_template, request, session, redirect, send_file, url_for
 import json
 import io
 from reportlab.pdfgen import canvas
 import requests
 import os
 
+app.secret_key = "ott-secret"
 app = Flask(__name__)
 
 DATA_FILE = "data.json"
@@ -67,6 +68,27 @@ def plan_details():
 @app.route("/cart")
 def cart():
     return render_template("cart.html")
+
+
+@app.route("/add_to_cart")
+def add_to_cart():
+    plan_id = request.args.get("plan_id", type=int)
+    data = load_data()
+
+    plan = next((p for p in data["plans"] if p["id"] == plan_id), None)
+    if not plan:
+        return redirect(url_for("index"))
+
+    cart = session.get("cart", [])
+    cart.append({
+        "id": plan["id"],
+        "name": plan["name"],
+        "price": plan["price"],
+        "logo": plan["logo"]
+    })
+
+    session["cart"] = cart
+    return redirect(url_for("cart"))
 
 
 @app.route("/checkout")
