@@ -275,6 +275,25 @@ def contact():
     return render_template("contact.html")
 
 
+from datetime import datetime
+
+@app.route("/invoice")
+def invoice():
+    cart_items = session.get("cart", [])
+    total = sum(item["price"] for item in cart_items)
+
+    utr = request.args.get("utr", "N/A")
+    date = datetime.now().strftime("%d %b %Y")
+
+    return render_template(
+        "invoice.html",
+        cart=cart_items,
+        total=total,
+        utr=utr,
+        date=date
+    )
+
+
 # -------------------------
 # Run
 # -------------------------
