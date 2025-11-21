@@ -1,20 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title if title else "OTT Platform" }}</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-
-<body>
-
-    <!-- NAVBAR -->
-    <header class="site-header">
+<header class="site-header">
     <div class="container header-inner">
 
-        <a href="{{ url_for('index') }}" class="logo">OTT Platform</a>
+        <a href="{{ url_for('index') }}" class="logo">OTT Minor</a>
 
         <nav class="main-nav">
             <ul>
@@ -28,19 +15,3 @@
 
     </div>
 </header>
-
-    <!-- MAIN CONTENT -->
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="container">
-            <p>© 2025 OTT Platform. All Rights Reserved.</p>
-        </div>
-    </footer>
-
-</body>
-</html>
