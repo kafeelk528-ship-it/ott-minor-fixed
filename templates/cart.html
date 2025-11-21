@@ -1,33 +1,41 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h2>Your Cart</h2>
+<h1 class="page-title" style="text-align:center;">Your Cart</h1>
 
-{% if not cart %}
-<p>No items in cart.</p>
-{% else %}
+{% if cart and cart|length > 0 %}
 
-<table border="1" cellpadding="10" width="100%">
+<table style="width:100%; margin-top:20px; background:#111; color:white; border-radius:10px; padding:10px;">
     <tr>
         <th>Logo</th>
-        <th>Name</th>
+        <th>Plan Name</th>
         <th>Price</th>
-        <th>Remove</th>
+        <th>Action</th>
     </tr>
 
     {% for item in cart %}
     <tr>
-        <td><img src="{{ url_for('static', filename='img/' + item.logo) }}" style="height:50px;"></td>
+        <td>
+            <img src="{{ url_for('static', filename='img/' + item.logo) }}" width="60">
+        </td>
         <td>{{ item.name }}</td>
         <td>₹{{ item.price }}</td>
-        <td><a href="/cart/remove/{{ item.id }}" class="btn-red btn">X</a></td>
+        <td>
+            <a class="btn btn-secondary" href="/remove_from_cart/{{ loop.index0 }}">Remove</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
 
-<h3>Total: ₹{{ total }}</h3>
+<h2 style="margin-top:25px;">Total: ₹{{ total }}</h2>
 
-<a href="/checkout" class="btn-green btn">Proceed to Checkout</a>
+<a class="btn btn-primary" href="/checkout">Proceed to Checkout</a>
+
+{% else %}
+
+<p style="text-align:center; font-size:18px; color:#ccc;">
+    No item in cart
+</p>
 
 {% endif %}
 
