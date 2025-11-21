@@ -1,26 +1,34 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% set plan_id = request.args.get('plan_id') | int %}
-{% set plan = None %}
+<div class="checkout-box">
 
-{% for p in data.plans %}
-    {% if p.id == plan_id %}
-        {% set plan = p %}
-    {% endif %}
-{% endfor %}
+    <h1 class="checkout-title">Secure Checkout</h1>
 
-<h1>Checkout</h1>
+    <p class="checkout-sub">
+        Complete your payment to activate your plan
+    </p>
 
-<div class="center-box">
-    <h2>{{ plan.name }}</h2>
-    <p>{{ plan.desc }}</p>
-    <p><b>Amount: ₹{{ plan.price }}</b></p>
+    <div class="payment-section">
 
-    <img src="{{ url_for('static', filename='img/qr.png') }}" width="220" style="margin-top:20px;">
+        <div class="qr-box">
+            <p class="label">Scan QR to Pay</p>
+            <img src="{{ url_for('static', filename='img/qr.png') }}" class="qr-image">
+        </div>
 
-    <br><br>
-    <a class="btn" href="{{ url_for('submit_utr') }}">I have paid — Submit UTR</a>
+        <form action="/submit_utr" method="post" class="utr-form">
+
+            <label>Enter UTR / Transaction ID</label>
+            <input type="text" name="utr" required placeholder="Enter UTR Number">
+
+            <button type="submit" class="pay-btn">
+                Submit Payment
+            </button>
+
+        </form>
+
+    </div>
+
 </div>
 
 {% endblock %}
