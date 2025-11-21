@@ -342,6 +342,62 @@ body {
     color: #00eaff;
 }
 
+/* ===== FIXED PLAN CARD DESIGN ===== */
+
+.card {
+    background: #1b2a2f;
+    border-radius: 18px;
+    padding: 25px;
+    text-align: center;
+    width: 300px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    margin: 20px auto;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+}
+
+.card img {
+    width: 90px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    color: #fff;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: #bbb;
+    font-size: 14px;
+}
+
+.card .price {
+    font-size: 22px;
+    color: #fff;
+    margin: 10px 0;
+}
+
+/* Buttons inside card */
+.card .btn {
+    padding: 10px 18px;
+    border-radius: 25px;
+    margin: 8px 5px;
+}
+
+/* Plan grid layout */
+.plan-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+
 /* Mobile Navbar Fix */
 @media (max-width: 700px){
     .header-flex {
