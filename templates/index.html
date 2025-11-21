@@ -1,9 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1 class="page-title">Choose Your Streaming Plan</h1>
+<!-- HERO SECTION -->
+<div class="hero-section">
+    <h1>Ultimate OTT Streaming Hub</h1>
+    <p>Watch Premium Platforms at Best Prices</p>
 
-<div class="grid">
+    <div class="hero-buttons">
+        <a href="/plans" class="btn btn-primary">View Plans</a>
+        <a href="#plans-area" class="btn btn-secondary">Explore Now</a>
+    </div>
+</div>
+
+<h1 class="page-title" style="text-align:center;">Choose Your Streaming Plan</h1>
+
+<!-- PLANS GRID -->
+<div class="grid" id="plans-area">
   {% for plan in data.plans %}
   <div class="card">
 
